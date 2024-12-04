@@ -49,10 +49,7 @@ entities:
     x: $ex vars.xs
     "y": $ex vars.ys
 refresh_interval: 100
-visibility:
-  - condition: user
-    users:
-      - 76d2743b0aa842aca5ec39494e30b707
+
 title: $ex "Daily XP"
 layout:
   height: 250
