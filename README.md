@@ -1,24 +1,25 @@
 # duolingo-leader-board
 
-While https://github.com/Makhuta/homeassistant-duolingo offer a good way to import the duolingo statistics, I had a need for a card rendering the board. 
+While https://github.com/Makhuta/homeassistant-duolingo offers a good way to import the duolingo statistics, I had a need for a card rendering the board. 
 
 ![image](https://github.com/user-attachments/assets/90e7e66c-5546-4aab-9ac5-92f119c4e450)
 
 
 
 ## Configuration
- - as entity it expectd the one that integration above creates as sensor.<username>_duolingo_leaderboard
- - user maxrows to limit the number of rows shown. You will always be shown, even if you are at a lower rank. 
+ - `entity`: Expects the one that the integration above creates as sensor.<username>_duolingo_leaderboard
+ - `maxrows`: Limits the number of rows shown. You will always be shown, even if you are at a lower rank. 
 
 ## Install
 Add this as custom repository to HACS
 
 ## Customization
- -  .pre class for row with users with higher score
-  - .fill class for filler row, if entires needed to be skipped
-  - .me   class for row with your results
-  - .post class for row with users with lower score
-            
+  -  `.pre` class for row with users with higher score
+  - `.fill` class for filler row, if entires needed to be skipped
+  - `.me`   class for row with your results
+  - `.post` class for row with users with lower score
+I guess `card_mod` should allow you to further teak this. 
+  
 ## For Daily Progress
 This is what I use for daily progress, totally unrelated to this repository, but useful. 
 
