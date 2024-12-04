@@ -17,6 +17,10 @@ Add this as custom repository to HACS
             
 ## For Daily Progress
 This is what I use for daily progress, totally unrelated to this repository, but useful. 
+
+![image](https://github.com/user-attachments/assets/13993c4b-43a6-4c1d-bd97-f423ba3c4f4c)
+
+
 ```
 type: custom:plotly-graph
 raw_plotly_config: true
