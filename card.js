@@ -78,7 +78,7 @@ class DuolingoLeaderBoardCard extends HTMLElement {
                 tr:nth-child(odd)  { background-color:var(--table-row-background-color);             }
                 
                 .pre  td {padding: 2px 6px; }
-                .fill td {min-height: 20px!important}            
+                .fill td {height:  7px;}
                 .me   td {padding: 2px 6px; font-size:large   ; font-weight: bold;  }
                 .post td {padding: 0px 6px; font-size: x-small; }            
                 
