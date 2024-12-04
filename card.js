@@ -96,7 +96,7 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         //res = {key: val for key, val in hass.states.items() if key.endswith("duolingo_leaderboard")};
         //find a way to search ... above not working...
         return {
-            entity: "sensor.",
+            entity: "sensor.<username>_duolingo_leaderboard",
             maxrows: 10 }
     }
 
