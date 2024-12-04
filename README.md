@@ -18,6 +18,7 @@ Add this as custom repository to HACS
   - `.fill` class for filler row, if entires needed to be skipped
   - `.me`   class for row with your results
   - `.post` class for row with users with lower score
+
 I guess `card_mod` should allow you to further teak this. 
   
 ## For Daily Progress
