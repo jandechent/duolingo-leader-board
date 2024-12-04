@@ -15,3 +15,49 @@ Add this as custom repository to HACS
   - .me   class for row with your results
   - .post class for row with users with lower score
             
+## For Daily Progress
+This is what I use for daily progress, totally unrelated to this repository, but useful. 
+```
+type: custom:plotly-graph
+raw_plotly_config: true
+hours_to_show: 1d
+entities:
+  - entity: sensor.falk0815_duolingo_today_xp
+    type: bar
+    fn: |-
+      $fn ({ xs,ys,vars, meta}) => {
+        vars.xs = [];
+        vars.ys = [];      
+        for (const [key, value] of Object.entries(meta)) {
+          if (key.includes(".20")){
+            vars.xs.unshift(key);
+            vars.ys.unshift(value);
+          }
+        }
+        vars.xs  = vars.xs.map(x=>x.split(".20")[0]+".");
+        vars.max = Math.max(1.05*Math.max(...vars.ys),100);
+      }        
+    x: $ex vars.xs
+    "y": $ex vars.ys
+refresh_interval: 100
+visibility:
+  - condition: user
+    users:
+      - 76d2743b0aa842aca5ec39494e30b707
+title: $ex "Daily XP"
+layout:
+  height: 250
+  yaxis:
+    rangemode: tozero
+    mirror: true
+    range:
+      - 0
+      - $ex vars.max;
+  xaxis:
+    mirror: true
+  margin:
+    l: 40
+    b: 40
+    t: 10
+    r: 20
+```
