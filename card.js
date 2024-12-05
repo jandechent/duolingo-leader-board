@@ -23,7 +23,7 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         const state = hass.states[entityId];
         const myrank = state ? state.state : 'unavailable';
         const myscore = state.attributes[myrank]["score"];
-
+        const nexttext = (myrank>1)? `Next in ${state.attributes[myrank-1]["score"]-myscore+1} XPs`: '';
 
         let rows = [...Array(this.config.maxrows).keys()];
         rows=rows.map(r=>(r+1).toString());
@@ -38,7 +38,7 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         if (!this.content) {
             // user makes sense here as every login gets it's own instance
             this.innerHTML = `
-                <ha-card header="Rank ${myrank}! Next in ${state.attributes[myrank-1]["score"]-myscore+1} XPs">
+                <ha-card header="Rank ${myrank}! ${nexttext}">
                     <div class="card-content"></div>
                 </ha-card>
             `;
