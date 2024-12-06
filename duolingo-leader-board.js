@@ -1,25 +1,23 @@
 import "https://cdn.plot.ly/plotly-2.4.2.min.js";
-
 class DuolingoLeaderBoardCard extends HTMLElement {
-
-    // assumes, https://github.com/Makhuta/homeassistant-duolingo is installed. 
     config;
     content;
-
     setConfig(config) {
+
         if (!config.entity_leaderboard) {
             throw new Error('Please define "entity_leaderboard" for leader board!');
         }
-        
+
         if (config.todayxp_goal){
             if (isNaN(Number(config.todayxp_goal)) || (config.todayxp_goal<0)){
                 throw new Error('"todayxp_goal" needs to be a positive integer');
             }
         }
-        
+
         if (!config.maxrows | config.maxrows>30 | config.maxrows<3) {
             throw new Error('Please define "maxrows" between 3 and 30!');
-        }        
+        }
+
         this.config = config;
     }
 
@@ -27,20 +25,47 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         var plt = document.createElement("div");            
         plt.setAttribute("id","theplot");
         let xs = [];
-        let ys = [];      
+        let ys = [];
+        // extract attributes, that are valid dates/scores
         for (const [key, value] of Object.entries( this.todayxp.attributes)) {
-          if (key.includes(".20")){
-            xs.unshift(key);
-            ys.unshift(value);
+          if (key.includes(".20")){ // to get rid of "friendly_name", etc...
+            xs.push(key);
+            ys.push(value);
           }
         }
-        xs  = xs.map(x=>x.split(".20")[0]+".");
+
+        // convert date string to new Date
+        xs = xs.map(x=>{
+            let parts = (x.split('.')).map(Number);
+            let date  = new Date(parts[2],parts[1]-1,parts[0]);
+            return date;
+        })
         
+        // from today, go backwards and fill _filled with scores, or fill 0
+        let xs_filled = [];
+        let ys_filled = [];
+        let checkdate = new Date((new Date()).setHours(0,0,0,0));
+        for (let day = 0; day < 7; day++) {
+            xs_filled.push(new Date(checkdate));
+            let i = xs.findIndex((element) => element.valueOf() == checkdate.valueOf());
+            if (i>=0){ ys_filled.push(ys[i])
+            }else{     ys_filled.push(0)}
+            checkdate.setDate(checkdate.getDate()-1);
+        } 
+
+        // copy back to xs
+        xs_filled.reverse()
+        ys_filled.reverse()
+        xs = xs_filled
+        ys = ys_filled
+
+        // make nice xtick labels by modifying the input already
+        xs = xs.map(x=> x.getDate()+"."+(x.getMonth()+1)+".")
+
         var data = [
             {x: xs, y: ys, type: 'bar',showlegend:false,  text: ys.map(String),},
             {x: xs, y: ys.map(y=>Math.max(0,this.config.todayxp_goal-y)), type: 'bar',showlegend:false,opacity:0.3}
         ];
-        
         var layout = {
             autosize: false,
             width: 350, height: 200,
@@ -54,16 +79,15 @@ class DuolingoLeaderBoardCard extends HTMLElement {
     makeTable(){
         let rows = [...Array(this.config.maxrows).keys()];
         rows=rows.map(r=>(r+1).toString());
-
         if (this.config.maxrows < this.myrank){
             rows[rows.length-2]="...";
             rows[rows.length-1]=this.myrank-1;
             rows[rows.length-0]=this.myrank;
         }    
+
         let tab = `<table>`;
         tab += `<thead><tr><th>Rank</th><th>Name</th><th>Streak</th><th>Score</th><th>Ahead</th></tr></thead>`;
         tab += `<tbody>`;
-
         rows.forEach((i) => {
             if (i=="..."){ // the divider row, in case we need to cut out results to keep within maxrows. 
                 tab += `<tr class="fill">`;
@@ -74,7 +98,6 @@ class DuolingoLeaderBoardCard extends HTMLElement {
                 let cl = "me"; 
                 cl = (i < this.myrank) ? "pre" : cl;
                 cl = (i > this.myrank) ? "post" : cl;
-
                 tab += `<tr class="${cl}">`;
                 tab += `  <td>${i}</td>`;
                 tab += `  <td>${this.leaderboard.attributes[i]["display_name"]}</td>`;
@@ -92,12 +115,12 @@ class DuolingoLeaderBoardCard extends HTMLElement {
             td,th { border: 1px solid black;}
             tr:nth-child(even) { background-color:var(--table-row-alternative-background-color);}
             tr:nth-child(odd)  { background-color:var(--table-row-background-color);}
-            
+
             .pre  td {padding: 2px 6px;}
             .fill td {height:  7px;}
             .me   td {padding: 2px 6px; font-size: large; font-weight: bold;}
             .post td {padding: 0px 6px; font-size: x-small;}
-            
+
             td {text-align:right;}
             td:nth-child(2) {text-align:left;}
             td:nth-child(3) {text-align:center;}
@@ -120,11 +143,12 @@ class DuolingoLeaderBoardCard extends HTMLElement {
                 throw new Error('Check what you provided as valid "entity_leaderboard');
             }
 
+            // basic card header and layout
             this.innerHTML  = `<ha-card header="Rank ${this.myrank}! ${this.nexttext}"><div class="card-content"></div></ha-card>`;
+
+            // card content itself:
             this.content    = this.querySelector('div');
-
             this.content.append(this.makeTable());
-
             if (this.config.entity_todayxp){
                 this.todayxp = hass.states[this.config.entity_todayxp]
                 this.todayxp_goal = hass.states[this.config.todayxp_goal]
@@ -133,18 +157,14 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         }
     }
 
-    static getStubConfig() {
-        // if default config is used, this should find it
-        //res = {key: val for key, val in hass.states.items() if key.endswith("duolingo_leaderboard")};
-        //find a way to search ... above not working...
-        return {
-            entity_leaderboard: "sensor.<username>_duolingo_leaderboard",
-            entity_todayxp: "sensor.<username>_duolingo_today_xp",
-            todayxp_goal: 50,
-            maxrows: 10 }
-    }
-}
+    static getStubConfig() { return {
+        entity_leaderboard: "sensor.<username>_duolingo_leaderboard",
+        entity_todayxp:     "sensor.<username>_duolingo_today_xp",
+        todayxp_goal:       50,
+        maxrows:            10
+    }}
 
+}
 customElements.define('duolingo-leader-board', DuolingoLeaderBoardCard);
 
 window.customCards = window.customCards || [];
