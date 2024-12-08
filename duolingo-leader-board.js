@@ -76,7 +76,8 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         let rows = [...Array(this.config.maxrows).keys()];
         rows=rows.map(r=>(r+1).toString());
         if (this.config.maxrows < this.myrank){
-            rows[rows.length-2]="...";
+            rows[rows.length-3]="...";
+            rows[rows.length-2]=this.myrank-2;
             rows[rows.length-1]=this.myrank-1;
             rows[rows.length-0]=this.myrank;
         }    
