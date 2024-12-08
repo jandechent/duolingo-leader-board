@@ -133,6 +133,7 @@ class DuolingoLeaderBoardCard extends HTMLElement {
             try {
                 this.leaderboard = hass.states["sensor."+this.config.username+"_duolingo_leaderboard"];
                 this.todayxp = hass.states["sensor."+this.config.username+"_duolingo_today_xp"];
+                this.tier = hass.states["sensor."+this.config.username+"_duolingo_leaderboard_tier"];
                 
                 this.myrank       = this.leaderboard.state;
                 this.myscore      = this.leaderboard.attributes[this.myrank]["score"];
@@ -143,7 +144,7 @@ class DuolingoLeaderBoardCard extends HTMLElement {
             }
 
             // basic card header and layout
-            this.innerHTML  = `<ha-card header="Rank ${this.myrank}! ${this.nexttext}"><div class="card-content"></div></ha-card>`;
+            this.innerHTML  = `<ha-card header="Rank ${this.myrank} in ${this.tier.state}! ${this.nexttext}"><div class="card-content"></div></ha-card>`;
 
             // card content itself:
             this.content    = this.querySelector('div');
