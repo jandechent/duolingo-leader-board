@@ -4,10 +4,6 @@ class DuolingoLeaderBoardCard extends HTMLElement {
     content;
     setConfig(config) {
 
-        if (!config.entity_leaderboard) {
-            throw new Error('Please define "entity_leaderboard" for leader board!');
-        }
-
         if (config.todayxp_goal){
             if (isNaN(Number(config.todayxp_goal)) || (config.todayxp_goal<0)){
                 throw new Error('"todayxp_goal" needs to be a positive integer');
@@ -135,12 +131,15 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         // done once - so the card is not updating live
         if (!this.content) {
             try {
-                this.leaderboard = hass.states[this.config.entity_leaderboard];
-                this.myrank      = this.leaderboard.state;
-                this.myscore     = this.leaderboard.attributes[this.myrank]["score"];
-                this.nexttext    = (this.myrank>1)? `Next in ${this.leaderboard.attributes[this.myrank-1]["score"]-this.myscore+1} XPs`: "";
+                this.leaderboard = hass.states["sensor."+this.config.username+"_duolingo_leaderboard"];
+                this.todayxp = hass.states["sensor."+this.config.username+"_duolingo_today_xp"];
+                
+                this.myrank       = this.leaderboard.state;
+                this.myscore      = this.leaderboard.attributes[this.myrank]["score"];
+                this.nexttext     = (this.myrank>1)? `Next in ${this.leaderboard.attributes[this.myrank-1]["score"]-this.myscore+1} XPs`: "";
+                this.todayxp_goal = hass.states[this.config.todayxp_goal]
             }catch(error){
-                throw new Error('Check what you provided as valid "entity_leaderboard');
+                throw new Error('Check what username you provided and that you have not renamed the entity_id from the integration.');
             }
 
             // basic card header and layout
@@ -149,17 +148,15 @@ class DuolingoLeaderBoardCard extends HTMLElement {
             // card content itself:
             this.content    = this.querySelector('div');
             this.content.append(this.makeTable());
-            if (this.config.entity_todayxp){
-                this.todayxp = hass.states[this.config.entity_todayxp]
-                this.todayxp_goal = hass.states[this.config.todayxp_goal]
-                this.content.append(this.makeProgressGraph());
-            }
+            
+            this.content.append(this.makeProgressGraph());
+
         }
     }
 
     static getStubConfig() { return {
-        entity_leaderboard: "sensor.<username>_duolingo_leaderboard",
-        entity_todayxp:     "sensor.<username>_duolingo_today_xp",
+
+        username:           "duolingo username",
         todayxp_goal:       50,
         maxrows:            10
     }}
