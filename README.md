@@ -8,8 +8,7 @@ While https://github.com/Makhuta/homeassistant-duolingo offers a good way to imp
 
 
 ## Configuration
- - `entity_leaderboard:` Expects the one that the integration above creates as sensor.<username>_duolingo_leaderboard
- - `entity_todayxp:` Expects the one that the integration above creates as sensor.<username>_entity_todayxp
+ - `username:` Expects the username you provided during setup of the above intergration. Also, please do not rename the entitiy_id, that the integration generated. 
  - `todayxp_goal:` Your XP goal. 
  - `maxrows:` Limits the number of rows shown. You will always be shown, even if you are at a lower rank. 
 
