@@ -132,8 +132,8 @@ class DuolingoLeaderBoardCard extends HTMLElement {
                 this.todayxp = hass.states["sensor."+this.config.username+"_duolingo_today_xp"];
                 this.tier = hass.states["sensor."+this.config.username+"_duolingo_leaderboard_tier"];
                 
-                this.myrank       = this.leaderboard.state;
-                this.myscore      = this.leaderboard.attributes[this.myrank]["score"];
+                this.myrank       = Number(this.leaderboard.state);
+                this.myscore      = Number(this.leaderboard.attributes[this.myrank]["score"]);
                 this.nexttext     = (this.myrank>1)? `Next in ${this.leaderboard.attributes[this.myrank-1]["score"]-this.myscore+1} XPs`: "";
                 this.todayxp_goal = hass.states[this.config.todayxp_goal]
             }catch(error){
