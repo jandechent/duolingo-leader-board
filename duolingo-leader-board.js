@@ -134,14 +134,13 @@ class DuolingoLeaderBoardCard extends HTMLElement {
                 
                 this.myrank       = Number(this.leaderboard.state);
                 this.myscore      = Number(this.leaderboard.attributes[this.myrank]["score"]);
-                this.nexttext     = (this.myrank>1)? `Next in ${this.leaderboard.attributes[this.myrank-1]["score"]-this.myscore+1} XPs`: "";
                 this.todayxp_goal = hass.states[this.config.todayxp_goal]
             }catch(error){
                 throw new Error('Check what username you provided and that you have not renamed the entity_id from the integration.');
             }
 
             // basic card header and layout
-            this.innerHTML  = `<ha-card header="Rank ${this.myrank} in ${this.tier.state}! ${this.nexttext}"><div class="card-content"></div></ha-card>`;
+            this.innerHTML  = `<ha-card header="Rank ${this.myrank} in ${this.tier.state}"><div class="card-content"></div></ha-card>`;
 
             // card content itself:
             this.content    = this.querySelector('div');
