@@ -2,18 +2,14 @@ import "https://cdn.plot.ly/plotly-2.4.2.min.js";
 class DuolingoLeaderBoardCard extends HTMLElement {
     config;
     content;
+    
     setConfig(config) {
-
-        if (config.todayxp_goal){
-            if (isNaN(Number(config.todayxp_goal)) || (config.todayxp_goal<0)){
-                throw new Error('"todayxp_goal" needs to be a positive integer');
-            }
+        if ( !config.todayxp_goal || isNaN(Number(config.todayxp_goal)) || config.todayxp_goal<0 ) {
+                throw new Error('"todayxp_goal" needs to be >= 0.');
         }
-
-        if (!config.maxrows | config.maxrows>30 | config.maxrows<3) {
-            throw new Error('Please define "maxrows" between 3 and 30!');
+        if ( !config.maxrows || isNaN(Number(config.maxrows)) || config.maxrows>30 | config.maxrows<3 ) {
+            throw new Error('Please define "maxrows" between 3 and 30.');
         }
-
         this.config = config;
     }
 
