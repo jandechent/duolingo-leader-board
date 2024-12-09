@@ -84,7 +84,11 @@ class DuolingoLeaderBoardCard extends HTMLElement {
         rows.forEach((i) => {
             if (i=="..."){ // the divider row, in case we need to cut out results to keep within maxrows. 
                 tab += `<tr class="fill">`;
-                tab += `<td colspan="100%"></td>`;
+                tab += `  <td></td>`;
+                tab += `  <td></td>`;
+                tab += `  <td></td>`;
+                tab += `  <td></td>`;
+                tab += `  <td></td>`;                
                 tab += `</tr>`;
             }else{
                 // set the class for the row, depending on the rank
